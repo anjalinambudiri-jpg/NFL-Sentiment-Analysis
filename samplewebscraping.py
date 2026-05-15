@@ -16,8 +16,62 @@ headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
 }
 
-"""# NFL"""
+# Import Selenium
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+
+import undetected_chromedriver as uc
+
+# Helper Functions
+def MakeSoup(url):
+    response = requests.get(url, headers=headers)
+
+    soup = BeautifulSoup(response.text)
+
+    return soup
+
+# Ideal driver to use (needed for ESPN) but may be slower
+def create_sneaky_driver():
+    options = uc.ChromeOptions()
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    driver = uc.Chrome(options=options)
+
+    return driver
+
+# Fallback if uc driver doesn't work
+def create_driver(): 
+    chrome_options = Options()
+    chrome_options.add_argument('--headless')
+    chrome_options.add_argument('--no-sandbox')
+    chrome_options.add_argument('--disable-dev-shm-usage')
+    chrome_options.add_argument('user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+    return driver
+
+def MakeSelenium(url, driver=None):
+    if not driver:
+        driver = create_sneaky_driver()
+    try:
+        driver.get(url)
+    
+        WebDriverWait(driver, 10).until(
+            lambda d: d.execute_script("return document.readyState") == "complete"
+        )
+        
+        soup = BeautifulSoup(driver.page_source, 'html.parser')
+    finally:
+        driver.quit()
+    
+    return soup
+
+"""# NFL"""
 def NFL(url):
 
   response = requests.get(url, headers=headers)
@@ -270,25 +324,6 @@ def NFLM(url):
 
   return st
 
-"""# Associated Press"""
-
-# Functional: 1 article needed
-def AP(url):
-    response = requests.get(url, headers=headers)
-
-    soup = BeautifulSoup(response.text)
-
-    p = soup.find('bsp-story-page').find_all('p')
-    st = ""
-    for ps in p:
-        text = ps.get_text()
-        if text[0] == '_':
-            return st
-        st += text
-    return st
-
-AP("https://apnews.com/article/ben-roethlisberger-pittsburgh-steelers-nfl-sports-mitch-trubisky-80347198a3dc3afcedf2a9b77c81ce06")
-
 """# NBC"""
 
 def NBC(url):
@@ -346,3 +381,185 @@ def CC(url):
           st += el.get_text()
 
   return st
+
+"""# Axios"""
+def AXIOS(url):
+    soup = MakeSelenium(url)
+
+    elements = soup.find('span', attrs={'data-schema': 'smart-brevity'})
+
+    st = ""
+    for element in elements:
+        text = element.get_text()
+        st += text
+    
+    elements = soup.find('span', attrs={'data-nosnippet': True, 'class': 'gated-content'}).find_all(['p', 'ul'])
+
+    for element in elements:
+        if element.name == 'ul':
+            for li in element.find_all('li'):
+                st += li.get_text()
+        else:
+            st+=element.get_text()
+   
+    return st
+
+"""# AP"""
+def AP(url):
+    soup = MakeSoup(url)
+
+    p = soup.find('bsp-story-page').find_all('p')
+    st = ""
+    for ps in p:
+        text = ps.get_text()
+        if text[0] == '_':
+            return st
+        st += text
+        
+    return st
+
+"""# CBS"""
+def CBS(url):
+    response = requests.get(url, headers=headers)
+
+    soup = BeautifulSoup(response.text)
+
+    p = soup.find('div', class_='Article-content').find_all('p')
+    st = ""
+    for ps in p:
+        text = ps.get_text()
+        st += text
+
+    clean_text = st.replace("\xa0", "")
+        
+    return clean_text
+
+"""# ESPN"""
+def ESPN(url):
+    soup = MakeSelenium(url)
+    
+    elements = soup.find('div', class_='article-body').find_all('p')
+
+    st = ""
+    for element in elements:
+        text = element.get_text()
+        st += text + " "
+
+    # Clean the text
+    clean_text = st.replace('\xa0', ' ')
+    clean_text = clean_text.replace("\\'", "'")
+    clean_text = clean_text.replace('\n', ' ')
+    clean_text = clean_text.replace('\t', ' ')
+    clean_text = ' '.join(clean_text.split())
+
+    return clean_text
+
+"""# F13"""
+def F13(url):
+    soup = MakeSoup(url)
+
+    p = soup.find('div', class_='article-body').find_all('p')
+    st = ""
+    for ps in p:
+        text = ps.get_text()
+        st += text
+
+    clean_text = st.replace("\xa0", "")
+        
+    return clean_text
+
+"""# FS"""
+def FS(url):
+    soup = MakeSoup(url)
+
+    p = soup.find('div', class_='article-content-body flex-col').find_all('p')
+    st = ""
+    for ps in p:
+        text = ps.get_text()
+        st += text
+
+    clean_text = st.replace("\xa0", "")
+        
+    return clean_text
+
+"""# GE"""
+def GE(url):
+    soup = MakeSelenium(url)
+
+    content_div = (soup.find('div', class_='gnt_ar_b'))
+
+    p = content_div.find_all('p')
+
+    st = ""
+    for ps in p:
+        text = ps.get_text()
+        st += text
+    clean_text = st.replace("\xa0", "")
+        
+    return clean_text
+
+"""# NYT"""
+def NYT(url):
+    soup = MakeSoup(url)
+
+    p = soup.find('div', class_='Article_ContentContainer__jBNW3 article-content-container bodytext1').find_all('p')
+    st = ""
+    for ps in p:
+        text = ps.get_text()
+        if text == 'Advertisement':
+            text = " "
+        st += text
+
+    clean_text = st.replace("\xa0", "")
+        
+    return clean_text 
+
+"""# AL"""
+def AL(url):
+    soup = MakeSelenium(url)
+
+    elements = soup.find('div', class_='entry-content').find_all('p')
+
+    st = ""
+    for element in elements:
+        text = element.get_text()
+        if text.isupper():
+            text = " "
+        st += text
+   
+    return st
+
+"""# NTS"""
+def NTS(url):
+    soup = MakeSelenium(url)
+
+    elements = soup.find('div', class_='server-rendered').find('article').find_all('p')
+
+    st = ""
+    for element in elements:
+        text = element.get_text()
+        st += text
+
+    clean_text = st.replace("\n", "")
+        
+    return clean_text
+
+"""# CLE"""
+def CLE(url):
+    soup = MakeSelenium(url)
+
+    p = soup.find('div', class_='entry-content').find_all('p')
+
+    st = ""
+    for ps in p:
+        text = ps.get_text()
+
+        if text == 'More Browns coverage':
+            break      
+        st += text
+        st += " "
+
+    clean_text = st.replace("\xa0", "")
+        
+    return clean_text
+
