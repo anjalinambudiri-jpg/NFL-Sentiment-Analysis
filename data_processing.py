@@ -35,7 +35,25 @@ source_function_map = {
     'FD': FD,
     "NFLM": NFLM,
     'CP': CP,
-    'CC': CC
+    'CC': CC,
+    'AXIOS' : AX,
+    'AP': AP,
+    'CBS' : CBS,
+    'ESPN' : ESPN,
+    'F13' : F13,
+    'FS' : FS,
+    'GE' : GE,
+    'NYT' : NYT,
+    'AL' : AL,
+    'NTS' : NTS,
+    'CLE' : CLE,
+    'NBCNY' : NBCNY,
+    'Sports247' : SPO247,
+    'WebZone49er' : WZ,
+    'NinersNation' : NN,
+    'SportingNews' : SN,
+    'WCVB' : WCVB,
+    
 }
 
 def process_row(row):
