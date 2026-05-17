@@ -10,6 +10,7 @@ Original file is located at
 """
 
 import pandas as pd
+import samplewebscraping
 
 df = pd.read_csv('https://raw.githubusercontent.com/anjalinambudiri-jpg/NFL-Sentiment-Analysis/refs/heads/Web-scraping-Function/Training%20Set%20Final.csv')
 
@@ -53,7 +54,7 @@ source_function_map = {
     'NinersNation' : NN,
     'SportingNews' : SN,
     'WCVB' : WCVB,
-    
+
 }
 
 def process_row(row):
