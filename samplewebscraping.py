@@ -563,3 +563,178 @@ def CLE(url):
         
     return clean_text
 
+"""NBC New York"""
+def NBCNY(url):
+    soup = MakeSoup(url)
+
+    Text = soup.find('div', class_ = "article-content rich-text")
+
+    Ad = Text.find('div', class_ = "recirc-module")
+    Ad.decompose()
+
+    Text = Text.get_text(separator = ' ', strip = True)
+
+    Text = Text.replace('\xa0', ' ')
+
+    #Text = Text.replace("\'", "'")
+
+    return Text
+
+"""247 Sports"""
+def Sports247(url):
+    soup = MakeSoup(url)
+    
+    Text = soup.find('section', class_ = 'article-body is-guest')
+    
+    for trash in Text.css.select('div', class_ = ['embedVideo', 'in-content-ad advertisement', 'GamblingPartnerAd', 'in-content-ad']):
+        trash.decompose()
+    
+    Ad = Text.find('strong')
+    Ad.decompose()
+    
+    Text = Text.get_text(separator = ' ', strip = True)
+    
+    Text = Text.replace('\xa0', ' ')
+    
+    return Text
+
+"""49ers Web Zone"""
+def WebZone49er(url):
+    soup = MakeSoup(url)
+    
+    Text = soup.find('div', class_ = 'article-text autolink')
+    
+    for trash in Text.css.select('div', class_ = 'adblock_container article-hide'):
+        trash.decompose()
+    
+    Text = Text.get_text(separator = ' ', strip = True)
+    
+    Text = Text.replace('\xa0', ' ')
+    
+    return Text
+
+"""Niners Nation"""
+def NinersNation(url):
+    soup = MakeSoup(url)
+    
+    article = soup.findAll('div', class_ = 'duet--article--article-body-component')
+
+    Text = ''
+
+    for text in article:
+        Text += text.get_text(separator = ' ', strip = True)
+    
+    Text = Text.replace('\xa0', ' ')
+    
+    return Text
+
+"""Sporting News"""
+def SportingNews(url):
+    soup = MakeSoup(url)
+    
+    Text = soup.find('div', class_ = 'text-body-1')
+    
+    for trash in Text.css.select('div', class_ = ['zephr-feature_video-player', 'image-wrapper', 'adPlaceholder-0', 'adPlaceholder-1', 'adPlaceholder-2', 'adPlaceholder-3', 'adPlaceholder-4', 'adPlaceholder-5', 'adPlaceholder-6', 'link-stack-slot']):
+        trash.decompose()
+    
+    Text = Text.get_text(separator = ' ', strip = True)
+    
+    Text = Text.replace('\xa0', ' ')
+    
+    return Text
+
+"""The Cold Wire"""
+
+
+"""WCVB"""
+def WCVB(url):
+    soup = MakeSoup(url)
+    
+    for tweet_widget in soup.find_all('div', {'class': 'embed-inner'}):
+        tweet_widget.decompose()
+    
+    Text = soup.find('div', class_ = 'article-content--body-text')
+
+    for trash in Text.css.select('div', class_ = 'screen-reader-only'):
+        trash.decompose()
+    
+    Text = Text.get_text(separator = ' ', strip = True)
+    
+    Text = Text.replace('\xa0', ' ')
+    
+    return Text
+
+"""Yahoo Sports"""
+
+"""Ebony Bird"""
+
+"""SB Nation"""
+def SBNation(url):
+    soup = MakeSoup(url)
+    
+    Text = soup.find('div', class_ = '_1nfb3k411')
+
+    Ad = Text.find('div', class_ = '_8kam0j0')
+    Ad.decompose()
+    
+    Text = Text.get_text(separator = ' ', strip = True)
+    
+    Text = Text.replace('\xa0', ' ')
+    
+    return Text
+
+"""LA Sports Hub"""
+def LASportsHub(url):
+    soup = MakeSoup(url)
+    
+    Text = soup.find('div', class_ = 'nfl-c-article__body d3-l-grid--inner')
+
+    Text = Text.get_text(separator = ' ', strip = True)
+    
+    Text = Text.replace('\xa0', ' ')
+    
+    return Text
+
+"""Battle Red Blog"""
+
+"""Football Guys"""
+def FootballGuys(url):
+    soup = MakeSoup(url)
+    
+    Text = soup.find('div', class_ = 'col col-12 col-lg-8 article-content')
+    
+    for trash in Text.find_all('div', class_ = ['article-image-credit my-3', 'mb-4']):
+        trash.decompose()
+    
+    Text = Text.get_text(separator = ' ', strip = True)
+    
+    Text = Text.replace('\xa0', ' ')
+    
+    return Text
+
+"""Just Blog Baby"""
+def JustBlogBaby(url):
+    soup = MakeSoup(url)
+    
+    Text = soup.find('div', class_ = 'article-content [&_p]:leading-[30px] [&_p]:md:leading-[28px] [&_li]:leading-[30px] [&_li]:md:leading-[28px]')
+
+    for trash in Text.find_all('div', class_ = ['flex min-w-0 flex-1 items-center gap-3']):
+        trash.decompose()
+
+    Ad = Text.find('h2', id = 'inline-text-11')
+    Ad.decompose()
+    
+    for hidden_tag in Text.select('[style*="display:none"], [style*="visibility:hidden"], .hidden'):
+        hidden_tag.decompose()
+    
+    Text = Text.get_text(separator = ' ', strip = True)
+    
+    Text = Text.replace('\xa0', ' ')
+    
+    return Text
+
+"""M Live"""
+
+"""Pro Football Network"""
+
+"""Predominately Orange"""
