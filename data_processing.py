@@ -76,12 +76,18 @@ def NFL(url):
   return st
 
 def BBC(url):
-  response = requests.get(url, headers=headers)
+    response = requests.get(url, headers=headers)
 
-  soup = BeautifulSoup(response.text)
+    soup = BeautifulSoup(response.text)
 
-  art = soup.find('article')
+    Text = soup.find('div', 'ssrcss-nqezkk-RichTextContainer e5tfeyi1')
 
+    Text = Text.get_text(separator = ' ', strip = True)
+    
+    Text = Text.replace('\xa0', ' ')
+
+    return Text
+'''
   divs = art.find_all('div', "ssrcss-oyhass-Spacer e1aon0op0")
 
   st = ""
@@ -91,6 +97,7 @@ def BBC(url):
           st += p.get_text()
 
   return st
+  '''
 
 def BD(url):
   response = requests.get(url, headers=headers)
@@ -680,6 +687,49 @@ def JustBlogBaby(url):
     
     return Text
 
+def YahooSports(url):  
+    soup = MakeSoup(url)
+    
+    for tweet_widget in soup.find_all('div', {'class': 'tweet-wrapper'}):
+        tweet_widget.decompose()
+    
+    Text = soup.find('div', class_ = 'content-body')
+    st = ""
+
+    if Text:
+        for trash in Text.css.select('figcaption', class_ = 'fig-caption'):
+            trash.decompose()
+
+        for hidden_tag in Text.select('[style*="display:none"], [style*="visibility:hidden"], .hidden'):
+            hidden_tag.decompose()
+
+        Text = Text.get_text(separator = ' ', strip = True)
+    
+        Text = Text.replace('\xa0', ' ')
+
+        return Text
+    else:
+        art = soup.find('article')
+
+        divs = art.find_all('div')
+
+        for div in divs:
+            paragraphs = div.find_all('p')
+            
+            for p in paragraphs:
+                st += p.get_text()
+                
+        st = st.replace("\xa0", "")
+
+        return st
+    '''
+    does not work T-T
+    for hidden_div in Text.select('p div'):
+        hidden_div.decompose()
+    '''
+    
+    return
+
 df = pd.read_csv('https://raw.githubusercontent.com/anjalinambudiri-jpg/NFL-Sentiment-Analysis/refs/heads/Web-scraping-Function/Training%20Set%20Final.csv')
 
 df = df[['Date','Topic/Name', 'Source', 'Link', 'Sentiment']]
@@ -720,6 +770,7 @@ source_function_map = {
     'NN' : NinersNation,
     'SN' : SportingNews,
     'WCVB' : WCVB,
+    'YS' : YahooSports
 }
 
 def process_row(row):
