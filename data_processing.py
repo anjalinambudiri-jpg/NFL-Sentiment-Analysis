@@ -32,6 +32,8 @@ def create_sneaky_driver():
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     driver = uc.Chrome(options=options)
+    #if the previous line doesn't work uncomment the next line and update with the chrome version that you have
+    #driver = uc.Chrome(version_main=148) 
 
     return driver
 
