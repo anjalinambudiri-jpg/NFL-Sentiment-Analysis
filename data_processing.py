@@ -1,3 +1,8 @@
+'''
+Goal: Functions that take the url of websites and scrapes the content to a csv
+1. Use beautiful soup
+2. Use Selenium for the websites that don't work with beautiful soup
+'''
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
@@ -63,6 +68,11 @@ def MakeSelenium(url, driver=None):
     
     return soup
 
+'''
+The functions for web scraping
+'''
+
+#scrape articles from NFL
 def NFL(url):
 
   response = requests.get(url, headers=headers)
@@ -77,6 +87,7 @@ def NFL(url):
       st += text
   return st
 
+#scrape articles from BBC
 def BBC(url):
     response = requests.get(url, headers=headers)
 
@@ -89,18 +100,8 @@ def BBC(url):
     Text = Text.replace('\xa0', ' ')
 
     return Text
-'''
-  divs = art.find_all('div', "ssrcss-oyhass-Spacer e1aon0op0")
 
-  st = ""
-  for div in divs:
-      paragraphs = div.find_all('p')
-      for p in paragraphs:
-          st += p.get_text()
-
-  return st
-  '''
-
+#scrape articles from Blogging Dirty
 def BD(url):
   response = requests.get(url, headers=headers)
 
@@ -118,6 +119,7 @@ def BD(url):
 
   return st
 
+#scrape articles from NFL Draft Diamonds
 def NFLDD(url):
   response = requests.get(url, headers=headers)
 
@@ -135,6 +137,7 @@ def NFLDD(url):
 
   return st
 
+#scrape articles from New York Post
 def NYP(url):
 
 
@@ -154,6 +157,7 @@ def NYP(url):
 
   return st
 
+#scrape articles from PFF
 def PFF(url):
   response = requests.get(url, headers=headers)
 
@@ -171,6 +175,7 @@ def PFF(url):
 
   return st
 
+#scrape articles from Sports Illuminated
 def SI(url):
   response = requests.get(url, headers=headers)
 
@@ -189,6 +194,7 @@ def SI(url):
 
   return st
 
+#scrape articles from NBC Philadelphia
 def NBCP(url):
   response = requests.get(url, headers=headers)
 
@@ -207,6 +213,7 @@ def NBCP(url):
 
   return st
 
+#scrape articles from Inside the Iggies
 def ITI(url):
   response = requests.get(url, headers=headers)
 
@@ -225,6 +232,7 @@ def ITI(url):
 
   return st
 
+#scrape articles from A to Z Sports
 def ATZ(url):
   response = requests.get(url, headers=headers)
 
@@ -241,6 +249,7 @@ def ATZ(url):
 
   return st
 
+#scrape articles from LA Times
 def LAT(url):
   response = requests.get(url, headers=headers)
 
@@ -259,6 +268,7 @@ def LAT(url):
 
   return st
 
+#scrape articles from Fan Duel
 def FD(url):
   response = requests.get(url, headers=headers)
 
@@ -277,6 +287,7 @@ def FD(url):
 
   return st
 
+#scrape articles from NFL Mocks
 def NFLM(url):
   response = requests.get(url, headers=headers)
 
@@ -295,6 +306,7 @@ def NFLM(url):
 
   return st
 
+#scrape articles from NBC
 def NBC(url):
   response = requests.get(url, headers=headers)
 
@@ -311,6 +323,7 @@ def NBC(url):
         st += text
   return st
 
+#scrape articles from Clutch Points
 def CP(url):
   response = requests.get(url, headers=headers)
 
@@ -329,6 +342,7 @@ def CP(url):
         st += text
   return st
 
+#scrape articles from Cat Crave
 def CC(url):
   response = requests.get(url, headers=headers)
 
@@ -345,6 +359,7 @@ def CC(url):
 
   return st
 
+#scrape articles from Axios (AX in the source map)
 def AXIOS(url):
     soup = MakeSelenium(url)
 
@@ -366,6 +381,7 @@ def AXIOS(url):
    
     return st
 
+#scrape articles from AP news
 def AP(url):
     soup = MakeSoup(url)
 
@@ -379,6 +395,7 @@ def AP(url):
         
     return st
 
+#scrape articles from CBS
 def CBS(url):
     response = requests.get(url, headers=headers)
 
@@ -394,6 +411,7 @@ def CBS(url):
         
     return clean_text
 
+#scrape articles from ESPN
 def ESPN(url):
     soup = MakeSelenium(url)
     
@@ -413,6 +431,7 @@ def ESPN(url):
 
     return clean_text
 
+#scrape articles from Fox 13
 def F13(url):
     soup = MakeSoup(url)
 
@@ -426,19 +445,9 @@ def F13(url):
         
     return clean_text
 
+#scrape articles from Fow News/Sports
 def FS(url):
     soup = MakeSoup(url)
-    '''
-    p = soup.find('div', class_='article-content-body flex-col').find_all('p')
-    st = ""
-    for ps in p:
-        text = ps.get_text()
-        st += text
-
-    clean_text = st.replace("\xa0", "")
-        
-    return clean_text
-    '''
     art = soup.find('article')
     st = ""
 
@@ -462,6 +471,7 @@ def FS(url):
 
     return st
 
+#scrape articles from Go Erie
 def GE(url):
     soup = MakeSelenium(url)
 
@@ -477,6 +487,7 @@ def GE(url):
         
     return clean_text
 
+#scrape articles from New York Times
 def NYT(url):
     soup = MakeSoup(url)
 
@@ -492,6 +503,7 @@ def NYT(url):
         
     return clean_text 
 
+#scrape articles from AL
 def AL(url):
     soup = MakeSelenium(url)
 
@@ -506,6 +518,7 @@ def AL(url):
    
     return st
 
+#scrape articles from News Tribune
 def NTS(url):
     soup = MakeSelenium(url)
 
@@ -520,6 +533,7 @@ def NTS(url):
         
     return clean_text
 
+#scrape articles from Cleveland
 def CLE(url):
     soup = MakeSelenium(url)
 
@@ -538,6 +552,7 @@ def CLE(url):
         
     return clean_text
 
+#scrape articles from NBC New York
 def NBCNY(url):
     soup = MakeSoup(url)
 
@@ -550,10 +565,9 @@ def NBCNY(url):
 
     Text = Text.replace('\xa0', ' ')
 
-    #Text = Text.replace("\'", "'")
-
     return Text
 
+#scrape articles from 247 Sports (SPO247 in the source map)
 def Sports247(url):
     soup = MakeSoup(url)
     
@@ -571,6 +585,7 @@ def Sports247(url):
     
     return Text
 
+#scrape articles from Web Zone 49er (WZ in the source map)
 def WebZone49er(url):
     soup = MakeSoup(url)
     
@@ -585,6 +600,7 @@ def WebZone49er(url):
     
     return Text
 
+#scrape articles from Niners Nation (NN in the source map)
 def NinersNation(url):
     soup = MakeSoup(url)
     
@@ -599,6 +615,7 @@ def NinersNation(url):
     
     return Text
 
+#scrape articles from Sporting News (SP in the source map)
 def SportingNews(url):
     soup = MakeSoup(url)
     
@@ -613,6 +630,7 @@ def SportingNews(url):
     
     return Text
 
+#scrape articles from WCVB
 def WCVB(url):
     soup = MakeSoup(url)
     
@@ -630,6 +648,7 @@ def WCVB(url):
     
     return Text
 
+#scrape articles from SB Nation
 def SBNation(url):
     soup = MakeSoup(url)
     
@@ -644,6 +663,7 @@ def SBNation(url):
     
     return Text
 
+#scrape articles from LA Sports Hub
 def LASportsHub(url):
     soup = MakeSoup(url)
     
@@ -655,6 +675,7 @@ def LASportsHub(url):
     
     return Text
 
+#scrape articles from Football Guys
 def FootballGuys(url):
     soup = MakeSoup(url)
     
@@ -669,6 +690,7 @@ def FootballGuys(url):
     
     return Text
 
+#scrape articles from Just Blog Baby
 def JustBlogBaby(url):
     soup = MakeSoup(url)
     
@@ -689,6 +711,7 @@ def JustBlogBaby(url):
     
     return Text
 
+#scrape articles from Yahoo Sports
 def YahooSports(url):  
     soup = MakeSoup(url)
     
@@ -724,14 +747,16 @@ def YahooSports(url):
         st = st.replace("\xa0", "")
 
         return st
-    '''
-    does not work T-T
-    for hidden_div in Text.select('p div'):
-        hidden_div.decompose()
-    '''
     
     return
 
+'''
+Data Processing
+1. Read csv with the websites that we want to scrape
+2. Add a column in the dataframe for the text that are scraped from the websites
+3. Call the functions for the corresponding sources to scrape and add to the text column
+4. Save as CSV
+'''
 df = pd.read_csv('https://raw.githubusercontent.com/anjalinambudiri-jpg/NFL-Sentiment-Analysis/refs/heads/Web-scraping-Function/Training%20Set%20Final.csv')
 
 df = df[['Date','Topic/Name', 'Source', 'Link', 'Sentiment']]
@@ -775,6 +800,7 @@ source_function_map = {
     'YS' : YahooSports
 }
 
+#Calls the webscraping functions
 def process_row(row):
     source = row['Source']
     # Force the Link to a string to ensure it has quotes/string properties
@@ -788,6 +814,8 @@ def process_row(row):
     # If the source isn't in our dictionary, keep the existing Text
     return row['Text']
 
+#Add the scraped text to the text column
 df['Text'] = df.apply(process_row, axis=1)
 
+#Save the data as a csv
 df.to_csv('ScrapedTraining.csv', index=False)
