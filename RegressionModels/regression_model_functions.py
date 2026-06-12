@@ -1,18 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Machine Learning Models
-# **This section houses the machine learning models we will use to predict QB fantasy scores. Models include...**
-# 1. Linear Regression
-# 2. Lasso Regression
-# 3. Ridge Regression
-# 4. Random Forest
-# 5. K Nearest Neighbors
-# 6. Support Vector Regression (Kernel)
-
-# In[9]:
-
-
 import os
 import numpy as np
 import pandas as pd
@@ -31,76 +16,7 @@ from sklearn.svm import SVR
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-
-# ### Importing Data and Adding Fantasy Points
-
-# In[11]:
-
-
-# Imports data from Sentiment Analysis
-url = 'https://raw.githubusercontent.com/anjalinambudiri-jpg/NFL-Sentiment-Analysis/refs/heads/main/sentimentfolder/article_sentiment_model_results'
-df = pd.read_csv(url)
-
-# Reconfigures data to have QB name and each of the 3 sentiment types as separate columns for said QB
-df_concise = df.drop(columns = ['Prob_Negative', 'Prob_Neutral', 'Prob_Positive', 'Overall_QB_Average'])
-df_final = df_concise.pivot_table(index='QB Name', columns='Subset Label', values='Sentiment_Score', aggfunc='first').reset_index()
-df_final.columns.name = None
-
-# Makes index QB Names
-df_final.set_index('QB Name', inplace=True)
-
-# Adds Non-PPR per game fantasy points data from 2024 and 2025
-# 2024 data from CBS b/c ESPN lacks 2024 data: https://www.cbssports.com/fantasy/football/stats/QB/2024/season/stats/nonppr/
-df_final['2024 Fantasy Points'] = [21.0, 15.1, 14.4, 17.2, 22.5, 22.6, 18.6, 29.2, 15.3, 19.9]
-# 2025 data from https://fantasy.espn.com/football/leaders?lineupSlot=0&scoringPeriodId=0&statSplit=lastSeason&leagueFormatId=1 
-df_final['2025 Fantasy Points'] = [17.9, 13.6, 14.9, 11.6, 18.7, 17.5, 17.9, 16.5, 20.6, 20.3]
-
-# Separating Features and target
-Features = ['In-Season', 'Offense'] # Excluding 2024 as it worsens model accuracy
-X = df_final[Features].values
-y = df_final['2025 Fantasy Points'].values
-
-df_final
-
-
-# ### Exploratory Data Analysis
-
-# In[13]:
-
-
-# Making a correlational heat map to see what variables to hone in on
-fig, ax = plt.subplots(figsize=(10, 8))
-
-corr = df_final.corr() # computes correlational coefficients
-mask = np.triu(np.ones_like(corr, dtype=bool))  # creates mask for heatmap to use
-
-# overlays heatmap corresponding to strength of correlation (blue = negative correlation, red = positive correlation)
-sns.heatmap(
-    corr, mask=mask, annot=True, fmt='.2f', cmap='coolwarm',
-    center=0, linewidths=0.5, ax=ax, annot_kws={'size': 9}
-)
-
-# formatting and such
-ax.set_title('Feature and Target Variable Correlations', fontsize=13, fontweight='bold')
-plt.tight_layout()
-plt.savefig('exploratory.png')
-plt.show()
-
-
-# ### Setting up the K-Fold
-
-# In[14]:
-
-
-# Configures cross validation splitter for k-folds (10 folds)
-kf = KFold(n_splits=10, shuffle=True, random_state=42)
-
-
-# ### Experiment Class with Data Visualization
-
-# In[15]:
-
-
+# Main Experiment Class
 class Regression_Experiment:
     """
     Tools for evaluating each model across all 10 folds
@@ -252,68 +168,13 @@ class Regression_Experiment:
 
 
 
-# ### Standardized Feature Scaling with StandardScaler Pipeline
-
-# In[16]:
-
+# Standardized Feature Scaling with StandardScaler Pipeline
 
 def make_pipeline(model):
     """
     Wraps model in a StandardScaler pipeline (seems best for ridge and lasso regression)
     """
     return Pipeline([('scaler', StandardScaler()), ('model', model)])
-
-
-# ### Run Models & Print Results
-
-# In[18]:
-
-
-# Sets up fresh experiment object to run tests
-exp = Regression_Experiment(X, y, kf, df_final)
-
-# Linear Regression and Random Forest are run without hyperparameter modifications
-exp.evaluate('Linear Regression', make_pipeline(LinearRegression()))
-exp.evaluate('Random Forest', make_pipeline(RandomForestRegressor(n_estimators=100, random_state=42)))
-
-
-# These next 4 models (LASSO, Ridge, KNN, SVR) are run with a variety of hyperparameters to find the best combination
-for alpha in [0.01, 0.1, 1.0, 10.0, 100.0]:
-    exp.evaluate(f'Ridge (α={alpha})', make_pipeline(Ridge(alpha=alpha)))
-
-for alpha in [0.01, 0.05, 0.1, 0.5, 1.0]:
-    exp.evaluate(f'Lasso (α={alpha})', make_pipeline(Lasso(alpha=alpha, max_iter=10000)))
-
-for k in [2, 3, 4, 5]:
-    exp.evaluate(f'KNN (k={k})', make_pipeline(KNeighborsRegressor(n_neighbors=k)))
-
-for C, eps in [(0.1, 0.1), (1.0, 0.5), (10.0, 0.1), (100.0, 0.5)]:
-    exp.evaluate(f'SVR (C={C}, ε={eps})', make_pipeline(SVR(kernel='rbf', C=C, epsilon=eps)))
-
-# Comparison table printed at the end to find best models
-print('\n *Model Comparison (Sorted by Avg RMSE)*')
-print(exp.summary().to_string(float_format='{:.4f}'.format))
-
-
-# ### Some Useful Data Visualizations
-
-# In[20]:
-
-
-# Prints the two visuals we defined earlier
-exp.plot_results()
-
-
-# In[21]:
-
-
-# Calculates base standard deviation for Fantasy Points
-std = statistics.pstdev(df_final['2025 Fantasy Points'])
-print(std)
-
-
-# In[ ]:
-
 
 
 
