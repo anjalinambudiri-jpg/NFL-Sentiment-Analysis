@@ -42,7 +42,7 @@ class Regression_Experiment:
         # Computes accuracy scores for each model  using cross_val_score
         mse_scores = -cross_val_score(pipeline, self.X, self.y, cv=self.kf, scoring='neg_mean_squared_error')
         rmse_scores = np.sqrt(mse_scores)
-        rel_err_pct = (rmse_scores / np.mean(y)) * 100
+        rel_err_pct = (rmse_scores / np.mean(self.y)) * 100
 
         # Computes Max Error
         y_pred = cross_val_predict(pipeline, self.X, self.y, cv=self.kf)
