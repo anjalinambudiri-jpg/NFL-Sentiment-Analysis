@@ -3,9 +3,11 @@ Our project is split up into 3 separate sections: Webscraping, Sentiment Analysi
 
 Group Contributions:
 
-Nicole - Webscraping   | 
-Anjali --> Sentiment Analysis  | 
-Oliver --> Regression
+Nicole - Webscraping
+
+Anjali - Sentiment Analysis
+
+Oliver - Regression
 
 Note: We divided up the article collection itself evenly between ourselves. In addition, Anjali and Oliver helped with a portion of the webscraping functions as that was by far the most time intensive task we had to undertake as a group. 
 
